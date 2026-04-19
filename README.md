@@ -1,2 +1,2 @@
 # Automation-code
-this is first repo
+this is first repository
