@@ -1,0 +1,30 @@
+const homePageData = {
+    expectedHomeUrl: /royalexport\.in\/?$/,
+    expectedTitle: 'Royal Export',
+    expectedCurrencies: [
+        'INR',
+        'USD',
+        'CAD',
+        'LKR',
+        'BDT',
+        'OMR',
+        'SAR',
+        'MUR',
+        'FJD',
+        'NZD',
+        'ZAR',
+        'KD',
+        'AED',
+        'SGD',
+        'CYP',
+        'ANG',
+        'EUR',
+        'MYR',
+        'GBP',
+        'JPY',
+        'AUD',
+        'SEK',
+    ],
+};
+
+module.exports = { homePageData };
