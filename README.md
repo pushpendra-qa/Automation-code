@@ -1,10 +1,25 @@
-# Automation-code
-this is first repository
-Author - Pushpendra Tarkar(QA-Engineer)
-Automation
-Author - Pushpendra Tarkar(Quality Assurance Engineer)
+# Playwright Automation Framework
 
-// added this comment for explanation purpose only
-// as specified already
-//this for demonstration purpose only
+## Main Folders
 
+- `pages/base`: shared page object behavior.
+- `pages/royal-export`: page objects for Royal Export.
+- `tests/fixtures`: custom Playwright fixtures.
+- `tests/royal-export`: Royal Export application tests.
+- `test-data`: reusable test data.
+- `utils`: small helper functions.
+
+## Commands
+
+```bash
+npm run test
+npm run test:royal
+npm run test:headed
+npm run report
+```
+
+Use `BASE_URL` to run against another environment:
+
+```bash
+BASE_URL=https://royalexport.in npm run test:royal
+```
