@@ -5,12 +5,10 @@ class RoyalExportHomePage extends BasePage
     constructor(page)
     {
         super(page);
-        this.headerBrandLink = page.getByRole('link', { name: /royal\s*export/i })
-            .or(page.locator('header a:has(img), .navbar-brand'))
-            .first();
-        this.currencySelectorButton = page.locator('.select-currency-by-user-button').first();
-        this.currencyDropdown = page.locator('.select-currency-by-user-div .dropdown-menu').first();
-        this.currencyOptions = page.locator('.select-currency-by-user');
+        this.headerBrandLink = page.locator('[alt="Royal Export Logo"]');
+        this.currencySelectorButton = page.locator('[data-toggle="dropdown"]').first();
+        this.currencyDropdown = page.locator('[class="dropdown-menu curre drop-cust"]');
+        this.currencyOptions = this.currencyDropdown.locator('li');
     }
 
     async goTo()
