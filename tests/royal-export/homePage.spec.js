@@ -120,3 +120,66 @@ test('Verify price updates across homepage when currency is switched to USD',asy
         }
 
 });
+
+test('Verify currency selection persists after navigating to a category page and back', async ({ page, royalExportHomePage }) =>
+{
+    await royalExportHomePage.goTo();
+    await royalExportHomePage.waitForHomePageHeader();
+
+    await royalExportHomePage.openCurrencySelector();
+    await royalExportHomePage.selectCurrency('AED');
+    await royalExportHomePage.waitForProductCurrencyIcon('fa-uae');
+
+    await expect.poll(async () => royalExportHomePage.getCurrencySelectorIconClass()).toContain('fa-uae');
+    await expect.poll(async () => royalExportHomePage.getCookieValue('selected_currency')).toBe(homePageData.aedCurrencyCookieValue);
+
+    const homePageAedPrices = await royalExportHomePage.getVisibleProductPriceDetails(5);
+    expect(homePageAedPrices.length).toBeGreaterThanOrEqual(5);
+    expect(homePageAedPrices.every(product => product.iconClass.includes('fa-uae'))).toBeTruthy();
+
+    await royalExportHomePage.goToKurtisCategory();
+
+    await expect(page).toHaveURL(/wholesale-kurtis/);
+    await expect.poll(async () => royalExportHomePage.getCurrencySelectorIconClass()).toContain('fa-uae');
+
+    const kurtisPageAedPrices = await royalExportHomePage.getVisibleProductPriceDetails(5);
+    expect(kurtisPageAedPrices.length).toBeGreaterThanOrEqual(5);
+    expect(kurtisPageAedPrices.every(product => product.iconClass.includes('fa-uae'))).toBeTruthy();
+
+    await royalExportHomePage.goBackToHomePage();
+    await royalExportHomePage.waitForHomePageHeader();
+
+    await expect(page).toHaveURL(homePageData.expectedHomeUrl);
+    await expect.poll(async () => royalExportHomePage.getCurrencySelectorIconClass()).toContain('fa-uae');
+    await expect.poll(async () => royalExportHomePage.getCookieValue('selected_currency')).toBe(homePageData.aedCurrencyCookieValue);
+
+    const returnedHomePageAedPrices = await royalExportHomePage.getVisibleProductPriceDetails(5);
+    expect(returnedHomePageAedPrices.length).toBeGreaterThanOrEqual(5);
+    expect(returnedHomePageAedPrices.every(product => product.iconClass.includes('fa-uae'))).toBeTruthy();
+});
+
+test('Verify search returns relevant results for a valid keyword', async ({ page, royalExportHomePage }) =>
+{
+    await royalExportHomePage.goTo();
+    await royalExportHomePage.waitForHomePageHeader();
+
+    await expect(royalExportHomePage.searchInput).toBeVisible();
+
+    await royalExportHomePage.searchProduct(homePageData.searchKeyword);
+
+    await expect(page).toHaveURL(/\/search\?s=Banarasi\+Saree/);
+    await expect(royalExportHomePage.searchResultProductNames.first()).toBeVisible();
+    await expect(royalExportHomePage.searchResultProductImages.first()).toBeVisible();
+
+    const resultProductNames = await royalExportHomePage.getSearchResultProductNames();
+    console.log('Search results for keyword:', homePageData.searchKeyword);
+    console.log(resultProductNames);
+
+    expect(resultProductNames.length).toBeGreaterThanOrEqual(1);
+    expect(
+        resultProductNames.some(productName =>
+            productName.toLowerCase().includes('banarasi') &&
+            productName.toLowerCase().includes('saree')
+        )
+    ).toBeTruthy();
+});
