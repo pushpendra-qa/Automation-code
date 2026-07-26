@@ -11,6 +11,11 @@ class RoyalExportHomePage extends BasePage
         this.currencyOptions = this.currencyDropdown.locator('li');
         this.productPrices = page.locator('.price');
         this.visibleProductPrices = page.locator('.price:visible');
+        this.kurtisNavLink = page.getByRole('link', { name: /^Kurtis$/ }).first();
+        this.searchInput = page.locator('#pnlserarch.hidden-xs input[name="s"]').first();
+        this.searchButton = page.locator('#proccesfind').first();
+        this.searchResultProductNames = page.locator('.title a:visible');
+        this.searchResultProductImages = page.locator('img[src*="product-img"]:visible');
     }
 
     async goTo()
@@ -136,6 +141,50 @@ class RoyalExportHomePage extends BasePage
                     iconClass: price.querySelector('i')?.className || '',
                 };
             }).filter(product => product.title && product.price)
+        );
+    }
+
+    async getCurrencySelectorIconClass()
+    {
+        return this.currencySelectorButton.locator('i').first().getAttribute('class');
+    }
+
+    async goToKurtisCategory()
+    {
+        await Promise.all([
+            this.page.waitForURL(/wholesale-kurtis/),
+            this.kurtisNavLink.click()
+        ]);
+        await this.waitForPageReady();
+    }
+
+    async goBackToHomePage()
+    {
+        await this.page.goBack({ waitUntil: 'domcontentloaded' });
+    }
+
+    async getCookieValue(cookieName)
+    {
+        const cookies = await this.page.context().cookies();
+        return cookies.find(cookie => cookie.name === cookieName)?.value;
+    }
+
+    async searchProduct(keyword)
+    {
+        await this.searchInput.click();
+        await this.searchInput.fill(keyword);
+        await Promise.all([
+            this.page.waitForURL(/\/search\?s=/),
+            this.searchButton.click()
+        ]);
+        await this.waitForPageReady();
+    }
+
+    async getSearchResultProductNames()
+    {
+        return this.searchResultProductNames.evaluateAll(products =>
+            products.map(product => product.textContent.trim().replace(/\s+/g, ' '))
+                .filter(productName => productName)
         );
     }
     

@@ -1,6 +1,8 @@
 const homePageData = {
     expectedHomeUrl: /royalexport\.in\/?$/,
     expectedTitle: 'Royal Export',
+    aedCurrencyCookieValue: 'AE',
+    searchKeyword: 'Banarasi Saree',
     expectedCurrencies: [
         'INR',
         'USD',
